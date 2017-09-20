@@ -1,6 +1,6 @@
 {
   "name": "@peterpme/react-native-swipeable",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A powerful React Native swipe component",
   "main": "lib/index.js",
   "scripts": {
