@@ -427,13 +427,13 @@ export default class Swipeable extends PureComponent {
   };
 
   _panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
-    onMoveShouldSetPanResponderCapture: debounce(this._handleMoveShouldSetPanResponder, 150),
-    onPanResponderGrant: debounce(this._handlePanResponderStart, 150),
-    onPanResponderMove: debounce(this._handlePanResponderMove, 150),
+    onMoveShouldSetPanResponder: debounce(this._handleMoveShouldSetPanResponder, 150),
+    onMoveShouldSetPanResponderCapture: debounce(this._handleMoveShouldSetPanResponder, 200),
+    onPanResponderGrant: debounce(this._handlePanResponderStart, 200),
+    onPanResponderMove: debounce(this._handlePanResponderMove, 200),
     onPanResponderRelease: debounce(this._handlePanResponderEnd, 150),
     onPanResponderTerminate: debounce(this._handlePanResponderEnd, 150),
-    onPanResponderTerminationRequest: this._handlePanResponderEnd
+    onPanResponderTerminationRequest: debounce(this._handlePanResponderEnd, 150)
   });
 
   _handleLayout = ({nativeEvent: {layout: {width}}}) => this.setState({width});
