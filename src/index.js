@@ -70,8 +70,10 @@ export default class Swipeable extends PureComponent {
     onSwipeComplete: PropTypes.func,
     swipeReleaseAnimationFn: PropTypes.func,
     swipeReleaseAnimationConfig: PropTypes.object,
-    swipeCompleteAnimationFn: PropTypes.func,
-    swipeCompleteAnimationConfig: PropTypes.object,
+    swipeCompleteLeftAnimationFn: PropTypes.func,
+    swipeCompleteLeftAnimationConfig: PropTypes.object,
+    swipeCompleteRightAnimationFn: PropTypes.func,
+    swipeCompleteRightAnimationConfig: PropTypes.object,
 
     // misc
     onRef: PropTypes.func,
@@ -150,8 +152,14 @@ export default class Swipeable extends PureComponent {
       duration: 250,
       easing: Easing.elastic(0.5)
     },
-    swipeCompleteAnimationFn: Animated.timing,
-    swipeCompleteAnimationConfig: {
+    swipeCompleteRightAnimationFn: Animated.timing,
+    swipeCompleteRightAnimationConfig: {
+      toValue: {x: 0, y: 0},
+      duration: 250,
+      easing: Easing.elastic(0.5)
+    },
+    swipeCompleteLeftAnimationFn: Animated.timing,
+    swipeCompleteLeftAnimationConfig: {
       toValue: {x: 0, y: 0},
       duration: 250,
       easing: Easing.elastic(0.5)
@@ -189,6 +197,50 @@ export default class Swipeable extends PureComponent {
   recenter = (
     animationFn = this.props.swipeReleaseAnimationFn,
     animationConfig = this.props.swipeReleaseAnimationConfig,
+    onDone
+  ) => {
+    const {pan} = this.state;
+
+    this.setState({
+      lastOffset: {x: 0, y: 0},
+      leftActionActivated: false,
+      leftButtonsActivated: false,
+      leftButtonsOpen: false,
+      rightActionActivated: false,
+      rightButtonsActivated: false,
+      rightButtonsOpen: false
+    });
+
+    pan.flattenOffset();
+
+    animationFn(pan, animationConfig).start(onDone);
+  };
+
+  animateLeft = (
+    animationFn = this.props.swipeCompleteLeftAnimationConfig,
+    animationConfig = this.props.swipeCompleteLeftAnimationConfig,
+    onDone
+  ) => {
+    const {pan} = this.state;
+
+    this.setState({
+      lastOffset: {x: 0, y: 0},
+      leftActionActivated: false,
+      leftButtonsActivated: false,
+      leftButtonsOpen: false,
+      rightActionActivated: false,
+      rightButtonsActivated: false,
+      rightButtonsOpen: false
+    });
+
+    pan.flattenOffset();
+
+    animationFn(pan, animationConfig).start(onDone);
+  };
+
+  animateRight = (
+    animationFn = this.props.swipeCompleteRightAnimationConfig,
+    animationConfig = this.props.swipeCompleteRightAnimationConfig,
     onDone
   ) => {
     const {pan} = this.state;
