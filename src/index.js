@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import React, {PureComponent} from 'react';
+import debounce from 'lodash.debounce'
 import {Animated, Easing, PanResponder, StyleSheet, View, ViewPropTypes} from 'react-native';
 import {PropTypes} from 'prop-types';
 /* eslint-enable import/no-unresolved, import/extensions */
@@ -69,6 +70,8 @@ export default class Swipeable extends PureComponent {
     onSwipeComplete: PropTypes.func,
     swipeReleaseAnimationFn: PropTypes.func,
     swipeReleaseAnimationConfig: PropTypes.object,
+    swipeCompleteAnimationFn: PropTypes.func,
+    swipeCompleteAnimationConfig: PropTypes.object,
 
     // misc
     onRef: PropTypes.func,
@@ -143,6 +146,12 @@ export default class Swipeable extends PureComponent {
     onSwipeComplete: noop,
     swipeReleaseAnimationFn: Animated.timing,
     swipeReleaseAnimationConfig: {
+      toValue: {x: 0, y: 0},
+      duration: 250,
+      easing: Easing.elastic(0.5)
+    },
+    swipeCompleteAnimationFn: Animated.timing,
+    swipeCompleteAnimationConfig: {
       toValue: {x: 0, y: 0},
       duration: 250,
       easing: Easing.elastic(0.5)
@@ -419,11 +428,11 @@ export default class Swipeable extends PureComponent {
 
   _panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
-    onMoveShouldSetPanResponderCapture: this._handleMoveShouldSetPanResponder,
-    onPanResponderGrant: this._handlePanResponderStart,
-    onPanResponderMove: this._handlePanResponderMove,
-    onPanResponderRelease: this._handlePanResponderEnd,
-    onPanResponderTerminate: this._handlePanResponderEnd,
+    onMoveShouldSetPanResponderCapture: debounce(this._handleMoveShouldSetPanResponder, 150),
+    onPanResponderGrant: debounce(this._handlePanResponderStart, 150),
+    onPanResponderMove: debounce(this._handlePanResponderMove, 150),
+    onPanResponderRelease: debounce(this._handlePanResponderEnd, 150),
+    onPanResponderTerminate: debounce(this._handlePanResponderEnd, 150),
     onPanResponderTerminationRequest: this._handlePanResponderEnd
   });
 
@@ -567,6 +576,8 @@ export default class Swipeable extends PureComponent {
     const count = buttons.length;
     const leftEnd = canSwipeLeft ? -width : 0;
     const rightEnd = canSwipeRight ? width : 0;
+    console.log("renderButtons:leftEnd", leftEnd)
+    console.log("renderButtons:rightEnd", rightEnd)
     const inputRange = isLeftButtons ? [0, rightEnd] : [leftEnd, 0];
 
     return buttons.map((buttonContent, index) => {
